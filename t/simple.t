@@ -27,4 +27,10 @@ is_deeply(
   'Inner scope plus lexical ok'
 );
 
+is_deeply(
+  [ $eval->eval('{ my $y = 0 }; $x') ],
+  [ 1 ],
+  'Inner scope and other lexical ok'
+);
+
 done_testing;

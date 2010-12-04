@@ -37,8 +37,8 @@ ${to_eval}
 ;sub Eval::WithLexicals::Cage::pad_capture { }
 BEGIN { Eval::WithLexicals::Util::capture_list() }
 sub Eval::WithLexicals::Cage::grab_captures {
-  no warnings 'closure'; no strict 'refs';
-  package Eval::WithLexicals::Cage;!;
+  no warnings 'closure'; no strict 'vars';
+  package Eval::WithLexicals::VarScope;!;
   $self->_eval_do(\$current_code, $self->lexicals);
   my @ret;
   my $ctx = $self->context;
@@ -51,9 +51,22 @@ sub Eval::WithLexicals::Cage::grab_captures {
   }
   $self->lexicals({
     %{$self->lexicals},
-    %{Eval::WithLexicals::Cage::grab_captures()}
+    %{$self->_grab_captures},
   });
   @ret;
+}
+
+sub _grab_captures {
+  my ($self) = @_;
+  my $cap = Eval::WithLexicals::Cage::grab_captures();
+  foreach my $key (keys %$cap) {
+    my ($sigil, $name) = $key =~ /^(.)(.+)$/;
+    my $var_scope_name = $sigil.'Eval::WithLexicals::VarScope::'.$name;
+    if ($cap->{$key} eq eval "\\${var_scope_name}") {
+      delete $cap->{$key};
+    }
+  }
+  $cap;
 }
 
 sub _eval_do {
