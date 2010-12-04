@@ -1,0 +1,19 @@
+use strictures 1;
+use Eval::WithLexicals;
+use Term::ReadLine;
+use Data::Dumper::Concise;
+use Try::Tiny;
+
+my $eval = Eval::WithLexicals->new;
+my $read = Term::ReadLine->new('Perl REPL');
+while (1) {
+  my $line = $read->readline('re.pl$ ');
+  exit unless defined $line;
+  my @ret; try {
+    local $SIG{INT} = sub { die "Caught SIGINT" };
+    @ret = $eval->eval($line);
+  } catch {
+    @ret = ("Error!", $_);
+  };
+  print Dumper @ret;
+}
