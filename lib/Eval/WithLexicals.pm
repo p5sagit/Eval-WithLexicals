@@ -3,6 +3,9 @@ package Eval::WithLexicals;
 use Moo;
 use Sub::Quote;
 
+our $VERSION = '1.000000'; # 1.0.0
+$VERSION = eval $VERSION;
+
 has lexicals => (is => 'rw', default => quote_sub q{ {} });
 
 {
@@ -39,7 +42,7 @@ BEGIN { Eval::WithLexicals::Util::capture_list() }
 sub Eval::WithLexicals::Cage::grab_captures {
   no warnings 'closure'; no strict 'vars';
   package Eval::WithLexicals::VarScope;!;
-  $self->_eval_do(\$current_code, $self->lexicals);
+  $self->_eval_do(\$current_code, $self->lexicals, $to_eval);
   my @ret;
   my $ctx = $self->context;
   if ($ctx eq 'list') {
@@ -70,7 +73,7 @@ sub _grab_captures {
 }
 
 sub _eval_do {
-  my ($self, $text_ref) = @_;
+  my ($self, $text_ref, $lexicals, $original) = @_;
   local @INC = (sub {
     if ($_[1] eq '/eval_do') {
       open my $fh, '<', $text_ref;
@@ -79,7 +82,7 @@ sub _eval_do {
       ();
     }
   }, @INC);
-  do '/eval_do' or die "Error: $@\nCompiling: $$text_ref";
+  do '/eval_do' or die $@;
 }
 
 {
@@ -96,5 +99,103 @@ sub _eval_do {
       ."\n}\n}\n1;\n";
   }
 }
+
+=head1 NAME
+
+Eval::WithLexicals - pure perl eval with persistent lexical variables
+
+=head1 SYNOPSIS
+
+  # file: bin/tinyrepl
+
+  #!/usr/bin/env perl
+
+  use strictures 1;
+  use Eval::WithLexicals;
+  use Term::ReadLine;
+  use Data::Dumper;
+
+  $SIG{INT} = sub { warn "SIGINT\n" };
+
+  { package Data::Dumper; no strict 'vars';
+    $Terse = $Indent = $Useqq = $Deparse = $Sortkeys = 1;
+    $Quotekeys = 0;
+  }
+
+  my $eval = Eval::WithLexicals->new;
+  my $read = Term::ReadLine->new('Perl REPL');
+  while (1) {
+    my $line = $read->readline('re.pl$ ');
+    exit unless defined $line;
+    my @ret; eval {
+      local $SIG{INT} = sub { die "Caught SIGINT" };
+      @ret = $eval->eval($line); 1;
+    } or @ret = ("Error!", $@);
+    print Dumper @ret;
+  }
+
+  # shell session:
+
+  $ perl -Ilib bin/tinyrepl 
+  re.pl$ my $x = 0;
+  0
+  re.pl$ ++$x;
+  1
+  re.pl$ $x + 3;
+  4
+  re.pl$ ^D
+  $
+
+=head1 METHODS
+
+=head2 new
+
+  my $eval = Eval::WithLexicals->new(
+    lexicals => { '$x' => \1 },      # default {}
+    in_package => 'PackageToEvalIn', # default Eval::WithLexicals::Scratchpad
+    context => 'scalar',             # default 'list'
+  );
+
+=head2 eval
+
+  my @return_value = $eval->eval($code_to_eval);
+
+=head2 lexicals
+
+  my $current_lexicals = $eval->lexicals;
+
+  $eval->lexicals(\%new_lexicals);
+
+=head2 in_package
+
+  my $current_package = $eval->in_package;
+
+  $eval->in_package($new_package);
+
+=head2 context
+
+  my $current_context = $eval->context;
+
+  $eval->context($new_context); # 'list', 'scalar' or 'void'
+
+=head1 AUTHOR
+
+Matt S. Trout <mst@shadowcat.co.uk>
+
+=head1 CONTRIBUTORS
+
+None required yet. Maybe this module is perfect (hahahahaha ...).
+
+=head1 COPYRIGHT
+
+Copyright (c) 2010 the Eval::WithLexicals L</AUTHOR> and L</CONTRIBUTORS>
+as listed above.
+
+=head1 LICENSE
+
+This library is free software and may be distributed under the same terms
+as perl itself.
+
+=cut
 
 1;
