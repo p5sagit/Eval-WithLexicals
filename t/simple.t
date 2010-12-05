@@ -33,4 +33,10 @@ is_deeply(
   'Inner scope and other lexical ok'
 );
 
+is_deeply(
+  [ keys %{$eval->lexicals} ],
+  [ '$x' ],
+  'No capture of invisible $y'
+);
+
 done_testing;
