@@ -1,19 +1,25 @@
+#!/usr/bin/env perl
+
 use strictures 1;
 use Eval::WithLexicals;
 use Term::ReadLine;
-use Data::Dumper::Concise;
-use Try::Tiny;
+use Data::Dumper;
+
+$SIG{INT} = sub { warn "SIGINT\n" };
+
+{ package Data::Dumper; no strict 'vars';
+  $Terse = $Indent = $Useqq = $Deparse = $Sortkeys = 1;
+  $Quotekeys = 0;
+}
 
 my $eval = Eval::WithLexicals->new;
 my $read = Term::ReadLine->new('Perl REPL');
 while (1) {
   my $line = $read->readline('re.pl$ ');
   exit unless defined $line;
-  my @ret; try {
+  my @ret; eval {
     local $SIG{INT} = sub { die "Caught SIGINT" };
-    @ret = $eval->eval($line);
-  } catch {
-    @ret = ("Error!", $_);
-  };
+    @ret = $eval->eval($line); 1;
+  } or @ret = ("Error!", $@);
   print Dumper @ret;
 }
