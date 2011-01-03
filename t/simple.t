@@ -39,4 +39,12 @@ is_deeply(
   'No capture of invisible $y'
 );
 
+$eval->eval('my $y = sub { $_[0]+1 }');
+
+is_deeply(
+  [ $eval->eval('$y->(2)') ],
+  [ 3 ],
+  'Sub created ok'
+);
+
 done_testing;

@@ -92,7 +92,7 @@ sub _eval_do {
 
   sub capture_list {
     my $pad_capture = \&Eval::WithLexicals::Cage::pad_capture;
-    my @names = map $_->PV, grep $_->isa('B::PV'),
+    my @names = grep $_ ne '&', map $_->PV, grep $_->isa('B::PV'),
       svref_2object($pad_capture)->OUTSIDE->PADLIST->ARRAYelt(0)->ARRAY;
     $Eval::WithLexicals::current_code .=
       '+{ '.join(', ', map "'$_' => \\$_", @names).' };'
