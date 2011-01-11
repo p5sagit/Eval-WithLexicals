@@ -4,9 +4,9 @@ my $strictures_hints;
 BEGIN { $strictures_hints = $^H }
 
 use Test::More;
-use Eval::WithLexicals::PersistHints;
+use Eval::WithLexicals;
 
-my $eval = Eval::WithLexicals::PersistHints->new(prelude => '');
+my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new(prelude => '');
 
 is_deeply(
   [ $eval->eval('$x = 1') ],

@@ -1,4 +1,4 @@
-package Eval::WithLexicals::Role::LexicalHints;
+package Eval::WithLexicals::WithHintPersistence;
 use Moo::Role;
 
 our($hints, %hints);
@@ -41,18 +41,19 @@ sub _capture_unroll_global {
   );
 }
 
-around setup_code => sub {
-  my $orig = shift;
+sub setup_code {
   my($self) = @_;
   # Only run the prelude on the first eval, hints will be set after
   # that.
   if($self->first_eval) {
     $self->first_eval(0);
-    return $self->prelude, $orig->(@_);
+    return $self->prelude;
   } else {
-    # Seems we can't use the technique of passing via @_ for code in a BEGIN block
-    return q[ BEGIN { ], _capture_unroll_global('$Eval::WithLexicals::Cage::hints', $self->hints, 2), q[ } ],
-      $orig->(@_);
+    # Seems we can't use the technique of passing via @_ for code in a BEGIN
+    # block
+    return q[ BEGIN { ],
+      _capture_unroll_global('$Eval::WithLexicals::Cage::hints', $self->hints, 2),
+      q[ } ],
   }
 };
 
@@ -61,7 +62,7 @@ around capture_code => sub {
   my($self) = @_;
 
   ( q{ sub Eval::WithLexicals::Cage::capture_hints {
-          no warnings 'closure';
+          no warnings 'closure'; # XXX: can we limit the scope of this?
           my($hints, %hints);
           BEGIN { $hints = $^H; %hints = %^H; }
           return q{$^H} => \$hints, q{%^H} => \%hints;
