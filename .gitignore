@@ -1,0 +1,12 @@
+.*.sw[po]
+.build
+Eval-WithLexicals-*
+MANIFEST
+MANIFEST.bak
+META.yml
+Makefile
+Makefile.old
+blib
+cover_db
+nytprof.out
+pm_to_blib
