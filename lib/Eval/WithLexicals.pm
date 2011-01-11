@@ -3,7 +3,7 @@ package Eval::WithLexicals;
 use Moo;
 use Sub::Quote;
 
-our $VERSION = '1.000000'; # 1.0.0
+our $VERSION = '1.001000'; # 1.1.0
 $VERSION = eval $VERSION;
 
 has lexicals => (is => 'rw', default => quote_sub q{ {} });
