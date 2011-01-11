@@ -54,6 +54,7 @@ sub eval {
 
   my $package = $self->in_package;
   my $setup_code = join '', $self->setup_code,
+    # $_[2] being what is passed to _eval_do below
     Sub::Quote::capture_unroll('$_[2]', $self->lexicals, 2);
 
   my $capture_code = join '', $self->capture_code;
