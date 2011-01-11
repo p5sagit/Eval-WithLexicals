@@ -36,6 +36,7 @@ sub eval {
 ${setup}
 sub Eval::WithLexicals::Cage::current_line {
 package ${package};
+#line 1 "(eval)"
 ${to_eval}
 ;sub Eval::WithLexicals::Cage::pad_capture { }
 BEGIN { Eval::WithLexicals::Util::capture_list() }
