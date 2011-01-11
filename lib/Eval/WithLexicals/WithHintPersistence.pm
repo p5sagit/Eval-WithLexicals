@@ -41,7 +41,8 @@ sub _capture_unroll_global {
   );
 }
 
-sub setup_code {
+around setup_code => sub {
+  shift; # we bypass orig, i.e. using role as normal inheritance.
   my($self) = @_;
   # Only run the prelude on the first eval, hints will be set after
   # that.
