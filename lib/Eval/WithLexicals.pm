@@ -1,6 +1,7 @@
 package Eval::WithLexicals;
 
 use Moo;
+use Moo::Role ();
 use Sub::Quote;
 
 our $VERSION = '1.001000'; # 1.1.0
@@ -29,34 +30,64 @@ has prelude => (
   is => 'rw', default => quote_sub q{ 'use strictures 1;' }
 );
 
+sub with_plugins {
+  my($class, @names) = @_;
+
+  Moo::Role->create_class_with_roles($class,
+    map "Eval::WithLexicals::With$_", @names);
+}
+
+sub setup_code {
+  my($self) = @_;
+  $self->prelude;
+}
+
+sub capture_code {
+  ( qq{ BEGIN { Eval::WithLexicals::Util::capture_list() } } )
+}
+
 sub eval {
   my ($self, $to_eval) = @_;
   local *Eval::WithLexicals::Cage::current_line;
   local *Eval::WithLexicals::Cage::pad_capture;
   local *Eval::WithLexicals::Cage::grab_captures;
-  my $setup = Sub::Quote::capture_unroll('$_[2]', $self->lexicals, 2);
+
   my $package = $self->in_package;
-  my $prelude = $self->prelude;
-  local our $current_code = qq!${prelude}
-${setup}
+  my $setup_code = join '', $self->setup_code,
+    # $_[2] being what is passed to _eval_do below
+    Sub::Quote::capture_unroll('$_[2]', $self->lexicals, 2);
+
+  my $capture_code = join '', $self->capture_code;
+
+  local our $current_code = qq!
+${setup_code}
 sub Eval::WithLexicals::Cage::current_line {
 package ${package};
 #line 1 "(eval)"
 ${to_eval}
 ;sub Eval::WithLexicals::Cage::pad_capture { }
-BEGIN { Eval::WithLexicals::Util::capture_list() }
+${capture_code}
 sub Eval::WithLexicals::Cage::grab_captures {
   no warnings 'closure'; no strict 'vars';
   package Eval::WithLexicals::VarScope;!;
+  # rest is appended by Eval::WithLexicals::Util::capture_list, called
+  # during parsing by the BEGIN block from capture_code.
+
   $self->_eval_do(\$current_code, $self->lexicals, $to_eval);
+  $self->_run(\&Eval::WithLexicals::Cage::current_line);
+}
+
+sub _run {
+  my($self, $code) = @_;
+
   my @ret;
   my $ctx = $self->context;
   if ($ctx eq 'list') {
-    @ret = Eval::WithLexicals::Cage::current_line();
+    @ret = $code->();
   } elsif ($ctx eq 'scalar') {
-    $ret[0] = Eval::WithLexicals::Cage::current_line();
+    $ret[0] = $code->();
   } else {
-    Eval::WithLexicals::Cage::current_line();
+    $code->();
   }
   $self->lexicals({
     %{$self->lexicals},
@@ -79,7 +110,7 @@ sub _grab_captures {
 }
 
 sub _eval_do {
-  my ($self, $text_ref, $lexicals, $original) = @_;
+  my ($self, $text_ref, $lexical, $original) = @_;
   local @INC = (sub {
     if ($_[1] eq '/eval_do') {
       open my $fh, '<', $text_ref;
@@ -120,6 +151,11 @@ Eval::WithLexicals - pure perl eval with persistent lexical variables
   use Eval::WithLexicals;
   use Term::ReadLine;
   use Data::Dumper;
+  use Getopt::Long;
+
+  GetOptions(
+    "plugin=s" => \my @plugins
+  );
 
   $SIG{INT} = sub { warn "SIGINT\n" };
 
@@ -128,7 +164,10 @@ Eval::WithLexicals - pure perl eval with persistent lexical variables
     $Quotekeys = 0;
   }
 
-  my $eval = Eval::WithLexicals->new;
+  my $eval = @plugins
+   ? Eval::WithLexicals->with_plugins(@plugins)->new
+   : Eval::WithLexicals->new;
+
   my $read = Term::ReadLine->new('Perl REPL');
   while (1) {
     my $line = $read->readline('re.pl$ ');
@@ -192,6 +231,25 @@ Code to run before evaling code. Loads L<strictures> by default.
   my $current_prelude = $eval->prelude;
 
   $eval->prelude(q{use warnings}); # only warnings, not strict.
+
+=head2 with_plugins
+
+  my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new;
+
+Construct a class with the given plugins. Plugins are roles located under
+a package name like C<Eval::WithLexicals::With*>.
+
+Current plugins are:
+
+=over 4
+
+=item * HintPersistence
+
+When enabled this will persist pragams and other compile hints between evals
+(for example the L<strict> and L<warnings> flags in effect). See
+L<Eval::WithLexicals::WithHintPersistence> for further details.
+
+=back
 
 =head1 AUTHOR
 
