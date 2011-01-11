@@ -185,7 +185,7 @@ Matt S. Trout <mst@shadowcat.co.uk>
 
 =head1 CONTRIBUTORS
 
-None required yet. Maybe this module is perfect (hahahahaha ...).
+David Leadbeater <dgl@dgl.cx>
 
 =head1 COPYRIGHT
 
