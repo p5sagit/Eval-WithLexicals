@@ -224,6 +224,25 @@ Code to run before evaling code. Loads L<strictures> by default.
 
   $eval->prelude(q{use warnings}); # only warnings, not strict.
 
+=head2 with_plugins
+
+  my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new;
+
+Construct a class with the given plugins. Plugins are roles located under
+a package name like C<Eval::WithLexicals::With*>.
+
+Current plugins are:
+
+=over 4
+
+=item * HintPersistence
+
+When enabled this will persist pragams and other compile hints between evals
+(for example the L<strict> and L<warnings> flags in effect). See
+L<Eval::WithLexicals::WithHintPersistence> for further details.
+
+=back
+
 =head1 AUTHOR
 
 Matt S. Trout <mst@shadowcat.co.uk>
