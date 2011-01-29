@@ -151,6 +151,11 @@ Eval::WithLexicals - pure perl eval with persistent lexical variables
   use Eval::WithLexicals;
   use Term::ReadLine;
   use Data::Dumper;
+  use Getopt::Long;
+
+  GetOptions(
+    "plugin=s" => \my @plugins
+  );
 
   $SIG{INT} = sub { warn "SIGINT\n" };
 
@@ -159,7 +164,10 @@ Eval::WithLexicals - pure perl eval with persistent lexical variables
     $Quotekeys = 0;
   }
 
-  my $eval = Eval::WithLexicals->new;
+  my $eval = @plugins
+   ? Eval::WithLexicals->with_plugins(@plugins)->new
+   : Eval::WithLexicals->new;
+
   my $read = Term::ReadLine->new('Perl REPL');
   while (1) {
     my $line = $read->readline('re.pl$ ');
