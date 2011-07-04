@@ -25,6 +25,10 @@ has in_package => (
   is => 'rw', default => quote_sub q{ 'Eval::WithLexicals::Scratchpad' }
 );
 
+has prelude => (
+  is => 'rw', default => quote_sub q{ 'use strictures 1;' }
+);
+
 sub eval {
   my ($self, $to_eval) = @_;
   local *Eval::WithLexicals::Cage::current_line;
@@ -32,7 +36,8 @@ sub eval {
   local *Eval::WithLexicals::Cage::grab_captures;
   my $setup = Sub::Quote::capture_unroll('$_[2]', $self->lexicals, 2);
   my $package = $self->in_package;
-  local our $current_code = qq!use strictures 1;
+  my $prelude = $self->prelude;
+  local our $current_code = qq!${prelude}
 ${setup}
 sub Eval::WithLexicals::Cage::current_line {
 package ${package};
@@ -155,6 +160,7 @@ Eval::WithLexicals - pure perl eval with persistent lexical variables
     lexicals => { '$x' => \1 },      # default {}
     in_package => 'PackageToEvalIn', # default Eval::WithLexicals::Scratchpad
     context => 'scalar',             # default 'list'
+    prelude => 'use warnings',       # default 'use strictures 1'
   );
 
 =head2 eval
@@ -178,6 +184,14 @@ Eval::WithLexicals - pure perl eval with persistent lexical variables
   my $current_context = $eval->context;
 
   $eval->context($new_context); # 'list', 'scalar' or 'void'
+
+=head2 prelude
+
+Code to run before evaling code. Loads L<strictures> by default.
+
+  my $current_prelude = $eval->prelude;
+
+  $eval->prelude(q{use warnings}); # only warnings, not strict.
 
 =head1 AUTHOR
 

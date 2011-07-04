@@ -1,3 +1,5 @@
+  - Make prelude configurable, so strictures can be optional
+
 1.1.0 2011-01-11 21:51:00
   - Add a #line directive so it's clearer where errors occurred (DGL)
   - Filter out lexicals called '&' since these are anon subs (MSTROUT)
