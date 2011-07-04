@@ -8,6 +8,6 @@ WriteMakefile(
   ABSTRACT_FROM => 'lib/Eval/WithLexicals.pm',
   AUTHOR => 'Matt S Trout <mst@shadowcat.co.uk>',
   LICENSE => 'perl',
-  PREREQ_PM => { Moo => '0.009' },
+  PREREQ_PM => { Moo => '0.009006' },
   EXE_FILES => [ 'bin/tinyrepl' ],
 );
