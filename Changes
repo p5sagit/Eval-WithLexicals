@@ -1,3 +1,5 @@
+  - Add documentation to tinyrepl script (HAARG)
+
 1.2.0 2011-07-04 21:42:30
   - HintPersistence plugin to persist compile time hints (DGL)
   - Support plugins (DGL)

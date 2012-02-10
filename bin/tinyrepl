@@ -31,3 +31,53 @@ while (1) {
   } or @ret = ("Error!", $@);
   print Dumper @ret;
 }
+
+__END__
+
+=head1 NAME
+
+tinyrepl - Tiny REPL
+
+=head1 SYNOPSIS
+
+    $ tinyrepl
+    re.pl$ "s" x 5
+    "sssss"
+    re.pl$ exit
+
+    $ tinyrepl --plugin HintPersistence
+
+=head1 DESCRIPTION
+
+tinyrepl is a minimal pure-Perl REPL.  It is just a small wrapper
+around L<Eval::WithLexicals>.
+
+=head1 OPTIONS
+
+=over 4
+
+=item C<--plugin=>
+
+Loads a plugin into the REPL. See L<Eval::WithLexicals/with_plugins>.
+
+=back
+
+=head1 AUTHOR
+
+Matt S. Trout <mst@shadowcat.co.uk>
+
+=head1 CONTRIBUTORS
+
+David Leadbeater <dgl@dgl.cx>
+
+=head1 COPYRIGHT
+
+Copyright (c) 2012 the Eval::WithLexicals L</AUTHOR> and L</CONTRIBUTORS>
+as listed above.
+
+=head1 LICENSE
+
+This library is free software and may be distributed under the same terms
+as perl itself.
+
+=cut
