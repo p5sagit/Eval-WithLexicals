@@ -93,7 +93,7 @@ sub _run {
     %{$self->lexicals},
     %{$self->_grab_captures},
   });
-  @ret;
+  return $self->context eq 'list' ? @ret : $ret[0];
 }
 
 sub _grab_captures {

@@ -1,3 +1,4 @@
+  - Obey scalar versus list context for ->eval return
   - HintPersistence plugin to persist compile time hints (DGL)
   - Support plugins (DGL)
   - Make prelude configurable, so strictures can be optional (DGL)

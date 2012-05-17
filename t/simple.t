@@ -47,4 +47,8 @@ is_deeply(
   'Sub created ok'
 );
 
+$eval->context('scalar');
+
+is($eval->eval('$y->(2)'), '3', 'Scalar eval ok');
+
 done_testing;
