@@ -1,4 +1,3 @@
-  - XXX: currently needs Moo from git (c69190f10)
   - HintPersistence plugin to persist compile time hints (DGL)
   - Support plugins (DGL)
   - Make prelude configurable, so strictures can be optional (DGL)
