@@ -3,22 +3,8 @@ use Test::More;
 use Eval::WithLexicals;
 use lib 't/lib';
 
-my $strictures_hints;
-my $strictures_warn;
-{
-  local $ENV{PERL_STRICTURES_EXTRA} = 0;
-  eval q{
-    use strictures 1;
-    BEGIN {
-      # Find the hint value that 'use strictures 1' sets on this perl.
-      $strictures_hints = $^H;
-      $strictures_warn = ${^WARNING_BITS};
-    };
-    1;
-  } or die $@;
-};
-
 use strictures 1;
+use get_strictures_hints qw($strictures_hints $strictures_warn);
 
 my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new(prelude => '');
 
