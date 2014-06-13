@@ -1,5 +1,6 @@
 Revision history for Eval-WithLexicals
 
+1.003000 - 2014-06-13
   - Add documentation to tinyrepl script
   - Convert packaging to use Distar
   - Minor pod cleanups
