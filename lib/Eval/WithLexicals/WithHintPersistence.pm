@@ -10,11 +10,6 @@ has hints => (
   default => quote_sub q{ {} },
 );
 
-has _first_eval => (
-  is => 'rw',
-  default => quote_sub q{ 1 },
-);
-
 around eval => sub {
   my $orig = shift;
   my($self) = @_;
@@ -25,6 +20,11 @@ around eval => sub {
   my @ret = $orig->(@_);
 
   $self->hints({ Eval::WithLexicals::Cage::capture_hints() });
+  $self->prelude(
+    join '', q[ BEGIN { ],
+      _capture_unroll_global('$Eval::WithLexicals::Cage::hints', $self->hints, 2),
+    q[ } ],
+  );
 
   @ret;
 };
@@ -42,22 +42,6 @@ sub _capture_unroll_global {
     } keys %$captures
   );
 }
-
-sub setup_code {
-  my($self) = @_;
-  # Only run the prelude on the first eval, hints will be set after
-  # that.
-  if($self->_first_eval) {
-    $self->_first_eval(0);
-    return $self->prelude;
-  } else {
-    # Seems we can't use the technique of passing via @_ for code in a BEGIN
-    # block
-    return q[ BEGIN { ],
-      _capture_unroll_global('$Eval::WithLexicals::Cage::hints', $self->hints, 2),
-      q[ } ],
-  }
-};
 
 around capture_code => sub {
   my $orig = shift;
