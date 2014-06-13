@@ -1,7 +1,12 @@
-use strictures 1;
-# Find the hint value that 'use strictures 1' sets on this perl.
+use strictures ();
 my $strictures_hints;
-BEGIN { $strictures_hints = $^H }
+BEGIN {
+  local $ENV{PERL_STRICTURES_EXTRA} = 0;
+  strictures->VERSION(1); strictures->import();
+  # Find the hint value that 'use strictures 1' sets on this perl.
+  $strictures_hints = $^H;
+}
+use strictures 1;
 
 use Test::More;
 use Eval::WithLexicals;
