@@ -1,3 +1,5 @@
+Revision history for Eval-WithLexicals
+
   - Add documentation to tinyrepl script
   - Convert packaging to use Distar
   - Minor pod cleanups
