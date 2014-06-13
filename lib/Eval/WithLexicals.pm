@@ -17,7 +17,7 @@ has lexicals => (is => 'rw', default => quote_sub q{ {} });
     isa => sub {
       my ($val) = @_;
       die "Invalid context type $val - should be list, scalar or void"
-	unless $valid_contexts{$val};
+        unless $valid_contexts{$val};
     },
   );
 }
