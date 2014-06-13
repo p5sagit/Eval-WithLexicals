@@ -262,6 +262,8 @@ Matt S. Trout <mst@shadowcat.co.uk>
 
 David Leadbeater <dgl@dgl.cx>
 
+haarg - Graham Knop (cpan:HAARG) <haarg@cpan.org>
+
 =head1 COPYRIGHT
 
 Copyright (c) 2010 the Eval::WithLexicals L</AUTHOR> and L</CONTRIBUTORS>
