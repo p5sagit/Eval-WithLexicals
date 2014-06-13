@@ -1,4 +1,10 @@
-  - Add documentation to tinyrepl script (HAARG)
+  - Add documentation to tinyrepl script
+  - Convert packaging to use Distar
+  - Minor pod cleanups
+  - Ensure hints testing works correctly, even under abnormal environment
+    variables (RT#81479)
+  - Correct hints test to run under perl 5.8 (RT#72766)
+  - Also preserve active warnings when using HintPersistence plugin
 
 1.2.0 2011-07-04 21:42:30
   - HintPersistence plugin to persist compile time hints (DGL)
