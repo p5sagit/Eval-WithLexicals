@@ -5,9 +5,6 @@ use Sub::Quote;
 our $VERSION = '1.002000'; # 1.2.0
 $VERSION = eval $VERSION;
 
-# Used localised
-our($hints, %hints);
-
 has hints => (
   is => 'rw',
   default => quote_sub q{ {} },
