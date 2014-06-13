@@ -24,8 +24,9 @@ $eval->eval('use strictures 1');
 {
   local $SIG{__WARN__} = sub { };
 
-  ok !eval { $eval->eval('$x') }, 'Unable to use undeclared variable';
-  like $@, qr/requires explicit package/, 'Correct message in $@';
+  ok !eval { $eval->eval('${"x"}') }, 'Unable to use undeclared variable';
+  like $@, qr/Can't use string .* as a SCALAR ref/,
+  'Correct message in $@';
 }
 
 is(
