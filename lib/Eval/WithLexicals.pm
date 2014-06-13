@@ -30,6 +30,8 @@ has prelude => (
   is => 'rw', default => quote_sub q{ 'use strictures 1;' }
 );
 
+has line => ( is => 'rw', default => 1 );
+
 sub with_plugins {
   my($class, @names) = @_;
 
@@ -53,6 +55,8 @@ sub eval {
   local *Eval::WithLexicals::Cage::grab_captures;
 
   my $package = $self->in_package;
+  my $line = $self->line;
+  $self->line($line+1);
   my $setup_code = join '', $self->setup_code,
     # $_[2] being what is passed to _eval_do below
     Sub::Quote::capture_unroll('$_[2]', $self->lexicals, 2);
@@ -63,7 +67,7 @@ sub eval {
 ${setup_code}
 sub Eval::WithLexicals::Cage::current_line {
 package ${package};
-#line 1 "(eval)"
+#line $line "(eval)"
 ${to_eval}
 ;sub Eval::WithLexicals::Cage::pad_capture { }
 ${capture_code}
