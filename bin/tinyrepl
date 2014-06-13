@@ -62,22 +62,16 @@ Loads a plugin into the REPL. See L<Eval::WithLexicals/with_plugins>.
 
 =back
 
-=head1 AUTHOR
+=head1 SUPPORT
 
-Matt S. Trout <mst@shadowcat.co.uk>
+See L<Eval::WithLexicals> for support and contact information.
 
-=head1 CONTRIBUTORS
+=head1 AUTHORS
 
-David Leadbeater <dgl@dgl.cx>
+See L<Eval::WithLexicals> for authors.
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2012 the Eval::WithLexicals L</AUTHOR> and L</CONTRIBUTORS>
-as listed above.
-
-=head1 LICENSE
-
-This library is free software and may be distributed under the same terms
-as perl itself.
+See L<Eval::WithLexicals> for the copyright and license.
 
 =cut

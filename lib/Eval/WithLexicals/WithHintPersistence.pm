@@ -75,6 +75,9 @@ around capture_code => sub {
     $orig->(@_) )
 };
 
+1;
+__END__
+
 =head1 NAME
 
 Eval::WithLexicals::WithHintPersistence - Persist compile hints between evals
@@ -101,6 +104,16 @@ Saves and restores the C<$^H> and C<%^H> variables.
 Returns the internal hints hash, keys are C<$^H> and C<%^H> for the hint bits
 and hint hash respectively.
 
-=cut
+=head1 SUPPORT
 
-1;
+See L<Eval::WithLexicals> for support and contact information.
+
+=head1 AUTHORS
+
+See L<Eval::WithLexicals> for authors.
+
+=head1 COPYRIGHT AND LICENSE
+
+See L<Eval::WithLexicals> for the copyright and license.
+
+=cut

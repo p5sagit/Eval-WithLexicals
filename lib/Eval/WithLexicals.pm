@@ -137,6 +137,9 @@ sub _eval_do {
   }
 }
 
+1;
+__END__
+
 =head1 NAME
 
 Eval::WithLexicals - pure perl eval with persistent lexical variables
@@ -270,5 +273,3 @@ This library is free software and may be distributed under the same terms
 as perl itself.
 
 =cut
-
-1;
