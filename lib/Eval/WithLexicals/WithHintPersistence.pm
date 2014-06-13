@@ -67,10 +67,18 @@ around capture_code => sub {
   my($self) = @_;
 
   ( q{ sub Eval::WithLexicals::Cage::capture_hints {
-          no warnings 'closure';
-          my($hints, %hints);
-          BEGIN { $hints = $^H; %hints = %^H; }
-          return q{$^H} => \$hints, q{%^H} => \%hints;
+          my ($hints, %hints, $warn_bits);
+          BEGIN {
+            no warnings 'closure';
+            $hints = $^H;
+            %hints = %^H;
+            $warn_bits = ${^WARNING_BITS};
+          }
+          return (
+            q{$^H}              => \$hints,
+            q{%^H}              => \%hints,
+            q{${^WARNING_BITS}} => \$warn_bits,
+          );
         } },
     $orig->(@_) )
 };

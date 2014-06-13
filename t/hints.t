@@ -1,16 +1,24 @@
 use strictures ();
-my $strictures_hints;
-BEGIN {
-  local $ENV{PERL_STRICTURES_EXTRA} = 0;
-  strictures->VERSION(1); strictures->import();
-  # Find the hint value that 'use strictures 1' sets on this perl.
-  $strictures_hints = $^H;
-}
-use strictures 1;
-
 use Test::More;
 use Eval::WithLexicals;
 use lib 't/lib';
+
+my $strictures_hints;
+my $strictures_warn;
+{
+  local $ENV{PERL_STRICTURES_EXTRA} = 0;
+  eval q{
+    use strictures 1;
+    BEGIN {
+      # Find the hint value that 'use strictures 1' sets on this perl.
+      $strictures_hints = $^H;
+      $strictures_warn = ${^WARNING_BITS};
+    };
+    1;
+  } or die $@;
+};
+
+use strictures 1;
 
 my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new(prelude => '');
 
@@ -34,9 +42,15 @@ $eval->eval('use strictures 1');
   like $@, qr/requires explicit package/, 'Correct message in $@';
 }
 
-is_deeply(
-  $eval->hints->{q{$^H}}, \$strictures_hints,
+is(
+  ${$eval->hints->{q{$^H}}}, $strictures_hints,
  'Hints are set per strictures'
+);
+
+is(
+  (unpack "H*", ${$eval->hints->{q{${^WARNING_BITS}}}}),
+  (unpack "H*", $strictures_warn),
+  'Warning bits are set per strictures'
 );
 
 is_deeply(
