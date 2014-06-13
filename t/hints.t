@@ -10,6 +10,7 @@ use strictures 1;
 
 use Test::More;
 use Eval::WithLexicals;
+use lib 't/lib';
 
 my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new(prelude => '');
 
@@ -44,13 +45,12 @@ is_deeply(
 );
 
 # Assumption about perl internals: sort pragma will set a key in %^H.
-
-$eval->eval(q{ { use sort 'stable' } }),
-ok !exists $eval->hints->{q{%^H}}->{sort},
+$eval->eval(q{ { use hint_hash_pragma 'param' } }),
+ok !exists $eval->hints->{q{%^H}}->{hint_hash_pragma},
   "Lexical pragma used below main scope not captured";
 
-$eval->eval(q{ use sort 'stable' }),
-ok exists $eval->hints->{q{%^H}}->{sort},
+$eval->eval(q{ use hint_hash_pragma 'param' }),
+is $eval->hints->{q{%^H}}->{hint_hash_pragma}, 'param',
   "Lexical pragma captured";
 
 done_testing;
