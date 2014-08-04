@@ -18,6 +18,7 @@ my %META = (
     runtime => {
       requires => {
         'Moo' => '0.009006',
+        'perl' => 5.008,
       },
     },
   },
