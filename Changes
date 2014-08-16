@@ -1,5 +1,8 @@
 Revision history for Eval-WithLexicals
 
+  - include minimum perl version in metadata
+  - hide some internal packages from getting indexed
+
 1.003000 - 2014-06-13
   - Add documentation to tinyrepl script
   - Convert packaging to use Distar
