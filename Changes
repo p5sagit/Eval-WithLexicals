@@ -1,5 +1,6 @@
 Revision history for Eval-WithLexicals
 
+1.003001 - 2014-08-16
   - include minimum perl version in metadata
   - hide some internal packages from getting indexed
 
