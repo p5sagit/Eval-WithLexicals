@@ -2,7 +2,7 @@ package Eval::WithLexicals::WithHintPersistence;
 use Moo::Role;
 use Sub::Quote;
 
-our $VERSION = '1.003002'; # 1.3.2
+our $VERSION = '1.003003'; # 1.3.3
 $VERSION = eval $VERSION;
 
 has hints => (
