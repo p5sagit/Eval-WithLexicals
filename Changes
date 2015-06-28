@@ -1,5 +1,7 @@
 Revision history for Eval-WithLexicals
 
+  - fix failures on threaded perl 5.22 (RT#102841)
+
 1.003002 - 2014-12-23
   - fix test failures on perl 5.21.7 (RT#101086; thanks, Father Chrysostomos!)
 

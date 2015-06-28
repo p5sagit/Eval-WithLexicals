@@ -54,4 +54,10 @@ $eval->eval(q{ use hint_hash_pragma 'param' }),
 is $eval->hints->{q{%^H}}->{hint_hash_pragma}, 'param',
   "Lexical pragma captured";
 
+$eval->eval('my $x = 1');
+is_deeply(
+  $eval->lexicals->{'$x'}, \1,
+  'Lexical captured when preserving hints',
+);
+
 done_testing;
