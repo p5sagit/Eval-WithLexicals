@@ -35,10 +35,45 @@ is(
 );
 
 is(
-  (unpack "H*", ${$eval->hints->{q{${^WARNING_BITS}}}}),
+  (unpack "H*", ${ $eval->hints->{'${^WARNING_BITS}'} }),
   (unpack "H*", $strictures_warn),
   'Warning bits are set per strictures'
-);
+) or do {
+  my @cats =
+    map {
+      [ $_         => $warnings::Bits{$_} ],
+      [ "fatal $_" => $warnings::DeadBits{$_} ],
+    }
+    grep $_ ne 'all',
+    keys %warnings::Bits;
+
+  my %info;
+  for my $check (
+    [ missing => $strictures_warn ],
+    [ extra   => ${ $eval->hints->{'${^WARNING_BITS}'} } ],
+  ) {
+    my $bits = $check->[1];
+    $info{$check->[0]} = {
+      map { ($bits & $_->[1]) =~ /[^\0]/ ? ( $_->[0] => 1 ) : () }
+      @cats
+    };
+  }
+
+  {
+    my @extra = keys %{$info{extra}};
+    my @missing = keys %{$info{missing}};
+    delete @{$info{missing}}{ @extra };
+    delete @{$info{extra}}{ @missing };
+  }
+
+  for my $type (qw(missing extra)) {
+    my @found = grep $info{$type}{$_}, map $_->[0], @cats;
+    diag "$type:"
+      if @found;
+    diag "    $_"
+      for @found;
+  }
+};
 
 is_deeply(
   $eval->lexicals, { },
