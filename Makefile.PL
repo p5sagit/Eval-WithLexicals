@@ -38,6 +38,7 @@ my %META = (
     directory => [ 't', 'xt' ]
   },
   x_authority => 'cpan:MSTROUT',
+  dynamic_config => 0,
 );
 
 my %MM_ARGS = (
