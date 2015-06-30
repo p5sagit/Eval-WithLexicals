@@ -1,5 +1,6 @@
 Revision history for Eval-WithLexicals
 
+1.003004 - 2015-06-30
   - improve diagnostics in hints test
 
 1.003003 - 2015-06-28
