@@ -12,12 +12,12 @@ my %META = (
     test => {
       requires => {
         'Test::More'  => 0.94,
-        'strictures'  => 1,
       },
     },
     runtime => {
       requires => {
         'Moo' => '0.009006',
+        'strictures'  => 1,
         'perl' => 5.008,
       },
     },
