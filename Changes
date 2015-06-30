@@ -1,5 +1,7 @@
 Revision history for Eval-WithLexicals
 
+  - improve diagnostics in hints test
+
 1.003003 - 2015-06-28
   - fix failures on threaded perl 5.22 (RT#102841)
 
