@@ -4,7 +4,7 @@ use Eval::WithLexicals;
 use lib 't/lib';
 
 use strictures 1;
-use get_strictures_hints qw($strictures_hints $strictures_warn);
+use get_strictures_hints;
 
 my $eval = Eval::WithLexicals->with_plugins("HintPersistence")->new(prelude => '');
 
@@ -19,6 +19,7 @@ is_deeply(
   'Lexical not stored'
 );
 
+my ($strictures_hints, $strictures_warn) = get_strictures_hints::hints();
 $eval->eval('use strictures 1');
 
 {
