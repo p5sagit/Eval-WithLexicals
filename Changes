@@ -1,5 +1,6 @@
 Revision history for Eval-WithLexicals
 
+1.003005 - 2015-07-01
   - fix hints test failures with some combinations of prerequisites
 
 1.003004 - 2015-06-30
