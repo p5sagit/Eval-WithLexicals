@@ -4,7 +4,7 @@ use Moo;
 use Moo::Role ();
 use Sub::Quote;
 
-our $VERSION = '1.003005'; # 1.3.5
+our $VERSION = '1.003006'; # v1.3.6
 $VERSION = eval $VERSION;
 
 has lexicals => (is => 'rw', default => quote_sub q{ {} });
