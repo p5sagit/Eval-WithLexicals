@@ -1,5 +1,6 @@
 Revision history for Eval-WithLexicals
 
+1.003006 - 2017-10-08
   - fix handling of range operators (RT#123091)
 
 1.003005 - 2015-07-01
